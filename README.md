@@ -1,3 +1,13 @@
+---
+title: Smart MCQ Solver
+emoji: 🧠
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+app_file: app.py
+pinned: false
+---
+
 # 🧠 Smart MCQ Solver – Deep Learning & Generative AI
 
 > **Student:** Soumya Ranjan Panda  
