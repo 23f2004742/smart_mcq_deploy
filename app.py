@@ -1,132 +1,101 @@
-import gradio as gr
+import streamlit as st
 import pandas as pd
 
-from predict_example import predict
+from predict import predict
 
+st.set_page_config(
+    page_title="Smart MCQ Solver",
+    page_icon="🧠",
+    layout="wide"
+)
 
-def solve(question, A, B, C, D, E):
+st.title("🧠 Smart MCQ Solver")
+st.markdown(
+    """
+Deep Learning & Generative AI based Multiple Choice Question Answering.
 
-    top3, scores = predict(
-        question,
-        [A, B, C, D, E]
-    )
-
-    ranking = (
-        f"🥇 {top3[0]}\n\n"
-        f"🥈 {top3[1]}\n\n"
-        f"🥉 {top3[2]}"
-    )
-
-    df = pd.DataFrame({
-        "Option": ["A", "B", "C", "D", "E"],
-        "Score": scores
-    })
-
-    return ranking, df
-
-
-DESCRIPTION = """
-# 🧠 Smart MCQ Solver
-
-Deep Learning & Generative AI Project
-
-Predicts the **Top-3 most likely answers**
-for a Multiple Choice Question using
-Sentence Transformer semantic similarity.
-
----
-
-### Enter a question and five answer options.
+Enter a question and five options to predict the **Top-3 most likely answers**.
 """
+)
 
+question = st.text_area(
+    "Question",
+    placeholder="Enter your MCQ question here..."
+)
 
-examples = [
+col1, col2 = st.columns(2)
 
-[
-"What is the capital of France?",
-"Paris",
-"London",
-"Berlin",
-"Madrid",
-"Rome"
-],
+with col1:
+    A = st.text_input("Option A")
+    B = st.text_input("Option B")
+    C = st.text_input("Option C")
 
-[
-"Which planet is known as the Red Planet?",
-"Earth",
-"Venus",
-"Mars",
-"Mercury",
-"Saturn"
-],
+with col2:
+    D = st.text_input("Option D")
+    E = st.text_input("Option E")
 
-[
-"What is the process by which plants make food?",
-"Respiration",
-"Photosynthesis",
-"Fermentation",
-"Digestion",
-"Evaporation"
-]
+if st.button("🚀 Predict", use_container_width=True):
 
-]
+    if not all([question, A, B, C, D, E]):
+        st.warning("Please fill all fields.")
+    else:
 
-
-with gr.Blocks(theme=gr.themes.Soft(), title="Smart MCQ Solver") as demo:
-
-    gr.Markdown(DESCRIPTION)
-
-    with gr.Row():
-
-        with gr.Column(scale=2):
-
-            question = gr.Textbox(
-                label="Question",
-                lines=4,
-                placeholder="Enter the MCQ question..."
-            )
-
-            A = gr.Textbox(label="Option A")
-            B = gr.Textbox(label="Option B")
-            C = gr.Textbox(label="Option C")
-            D = gr.Textbox(label="Option D")
-            E = gr.Textbox(label="Option E")
-
-            predict_btn = gr.Button(
-                "🚀 Predict",
-                variant="primary"
-            )
-
-        with gr.Column():
-
-            ranking = gr.Textbox(
-                label="🏆 Top 3 Predictions",
-                lines=6
-            )
-
-            chart = gr.BarPlot(
-                x="Option",
-                y="Score",
-                title="Confidence Scores"
-            )
-
-    predict_btn.click(
-        solve,
-        inputs=[question, A, B, C, D, E],
-        outputs=[ranking, chart]
-    )
-
-    gr.Examples(
-        examples,
-        inputs=[
+        top3, scores = predict(
             question,
-            A,
-            B,
-            C,
-            D,
-            E
-        ]
+            [A, B, C, D, E]
+        )
+
+        option_map = {
+            "A": A,
+            "B": B,
+            "C": C,
+            "D": D,
+            "E": E
+        }
+
+        st.success("Prediction Complete!")
+
+        st.subheader("🏆 Top 3 Predictions")
+
+        medals = ["🥇", "🥈", "🥉"]
+
+        for medal, label in zip(medals, top3):
+            st.markdown(f"### {medal} {label}")
+            st.write(option_map[label])
+
+        st.subheader("Confidence Scores")
+
+        df = pd.DataFrame({
+            "Option": ["A", "B", "C", "D", "E"],
+            "Score": scores
+        })
+
+        st.bar_chart(df.set_index("Option"))
+
+st.divider()
+
+st.markdown("### Example")
+
+if st.button("Load Example"):
+
+    st.session_state["loaded"] = True
+
+if st.session_state.get("loaded", False):
+
+    st.info(
+        """
+Question:
+
+Which planet is known as the Red Planet?
+
+A. Earth
+
+B. Venus
+
+C. Mars
+
+D. Mercury
+
+E. Saturn
+"""
     )
-
-
-demo.launch()
