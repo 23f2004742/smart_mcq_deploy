@@ -1,0 +1,51 @@
+{
+  "options": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ],
+  "encoders": [
+    "sentence-transformers/multi-qa-mpnet-base-cos-v1",
+    "sentence-transformers/all-mpnet-base-v2",
+    "BAAI/bge-small-en-v1.5",
+    "intfloat/e5-base-v2"
+  ],
+  "primary_encoder": "BAAI/bge-small-en-v1.5",
+  "emb_dim": 384,
+  "ensemble_weights": {
+    "mpnet": 3.0,
+    "deep": 2.0,
+    "tdeep": 3.0,
+    "bilstm": 3.0,
+    "disc": 3.0
+  },
+  "scales": {
+    "tfidf": 0.04215414578029412,
+    "mpnet": 3.847637853053951,
+    "deep": 4.691331241278818,
+    "tdeep": 1.9382955513964222,
+    "bilstm": 8.836399349337766,
+    "disc": 82.4760232063224
+  },
+  "label_log_prior": [
+    -1.6901058155015551,
+    -1.40649706843741,
+    -1.4718522494815371,
+    -1.720369473141382,
+    -1.820158943749753
+  ],
+  "prior_map3": 0.42125,
+  "bilstm": {
+    "max_len": 96,
+    "emb": 128,
+    "hidden": 128,
+    "vocab_size": 2989
+  },
+  "deepnet": {
+    "hidden": 256,
+    "dropout": 0.2
+  },
+  "public_map3": 0.76226
+}
