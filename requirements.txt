@@ -1,7 +1,6 @@
-gradio>=5.0
+streamlit
 sentence-transformers
 transformers
 torch
 numpy
-pandas
 scikit-learn
