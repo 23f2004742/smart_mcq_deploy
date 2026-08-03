@@ -36,6 +36,9 @@ with col2:
 
 if st.button("🚀 Predict", use_container_width=True):
 
+    with st.spinner("Loading model... (only first time)"):
+        from predict import predict
+
     if not all([question, A, B, C, D, E]):
         st.warning("Please fill all fields.")
     else:
